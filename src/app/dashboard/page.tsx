@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { PlusCircle, Clock, CheckCircle, AlertTriangle, FileText } from 'lucide-react';
+import { PlusCircle, Clock, CheckCircle, AlertTriangle, FileText, MapPin } from 'lucide-react';
 
 export default async function DashboardPage() {
   const supabase = createClient();
