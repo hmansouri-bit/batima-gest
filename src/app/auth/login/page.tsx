@@ -35,8 +35,18 @@ export default function LoginPage() {
       if (error) {
         toast.error('Erreur de connexion : Email ou mot de passe incorrect.');
       } else if (data.session) {
+        const { data: profile } = await supabase
+          .from('residents')
+          .select('role')
+          .eq('id', data.user.id)
+          .single()
+
         toast.success('Connexion réussie !');
-        window.location.href = '/dashboard';
+        if (profile?.role === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/dashboard';
+        }
       }
     } catch (err) {
       toast.error('Une erreur inattendue est survenue.');
