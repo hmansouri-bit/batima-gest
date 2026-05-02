@@ -29,7 +29,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error('Les mots de passe ne correspondent pas.');
       return;
@@ -38,10 +38,18 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // 1. Sign up user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          emailRedirectTo: undefined,
+          data: {
+            full_name: formData.fullName,
+            apartment_number: formData.apartmentNumber,
+            building_name: formData.buildingName,
+            phone: formData.phone || null,
+          },
+        },
       });
 
       if (authError) {
@@ -50,28 +58,40 @@ export default function RegisterPage() {
         return;
       }
 
-      if (authData.user) {
-        // 2. Insert into residents table
-        const { error: profileError } = await supabase
-          .from('residents')
-          .insert([
-            {
-              id: authData.user.id,
-              full_name: formData.fullName,
-              apartment_number: formData.apartmentNumber,
-              building_name: formData.buildingName,
-              phone: formData.phone || null,
-            }
-          ]);
+      if (authData.user && authData.user.identities && authData.user.identities.length === 0) {
+        toast.error('Un compte existe déjà avec cet email.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (signInError) {
+        toast.error(signInError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (signInData.user) {
+        const { error: profileError } = await supabase.from('residents').insert({
+          id: signInData.user.id,
+          full_name: formData.fullName,
+          phone: formData.phone || null,
+          apartment_number: formData.apartmentNumber,
+          building_name: formData.buildingName,
+        });
 
         if (profileError) {
-          toast.error('Erreur lors de la création du profil résident.');
-          console.error(profileError);
-        } else {
-          toast.success('Compte créé avec succès !');
-          router.push('/dashboard');
-          router.refresh();
+          toast.error(profileError.message);
+          setLoading(false);
+          return;
         }
+
+        toast.success('Compte créé avec succès !');
+        window.location.href = '/dashboard';
       }
     } catch (err) {
       toast.error('Une erreur inattendue est survenue.');

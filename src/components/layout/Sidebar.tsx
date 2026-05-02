@@ -23,7 +23,7 @@ export function Sidebar({ user, profile }: SidebarProps) {
     if (error) {
       toast.error('Erreur lors de la déconnexion');
     } else {
-      router.push('/auth/login');
+        window.location.href = '/auth/login';
       router.refresh();
     }
   };

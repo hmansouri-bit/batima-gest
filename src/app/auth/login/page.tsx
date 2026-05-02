@@ -36,8 +36,7 @@ export default function LoginPage() {
         toast.error('Erreur de connexion : Email ou mot de passe incorrect.');
       } else if (data.session) {
         toast.success('Connexion réussie !');
-        router.push('/dashboard');
-        router.refresh();
+        window.location.href = '/dashboard';
       }
     } catch (err) {
       toast.error('Une erreur inattendue est survenue.');
