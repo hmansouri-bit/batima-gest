@@ -31,14 +31,7 @@ export async function middleware(request: NextRequest) {
 
   // This will just refresh the session cookie if it's expired.
   // We remove the redirection logic here and let the client-side layout handle it.
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const isProtected = request.nextUrl.pathname.startsWith('/dashboard') || 
-                      request.nextUrl.pathname.startsWith('/admin')
-
-  if (isProtected && !user) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
-  }
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }
