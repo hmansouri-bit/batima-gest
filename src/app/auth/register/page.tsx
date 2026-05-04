@@ -38,6 +38,8 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
+      console.log('[REGISTER] Starting signup for:', formData.email);
+
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -53,6 +55,7 @@ export default function RegisterPage() {
       });
 
       if (authError) {
+        console.error('[REGISTER] Signup error:', authError.message);
         toast.error(authError.message);
         setLoading(false);
         return;
@@ -64,18 +67,24 @@ export default function RegisterPage() {
         return;
       }
 
+      console.log('[REGISTER] Signup successful, signing in...');
+
       const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
       if (signInError) {
+        console.error('[REGISTER] Sign-in error:', signInError.message);
         toast.error(signInError.message);
         setLoading(false);
         return;
       }
 
       if (signInData.user) {
+        console.log('[REGISTER] Signed in, creating profile...');
+
+        // Try to create profile — if it fails, dashboard layout will handle it
         const { error: profileError } = await supabase.from('residents').insert({
           id: signInData.user.id,
           full_name: formData.fullName,
@@ -85,17 +94,18 @@ export default function RegisterPage() {
         });
 
         if (profileError) {
-          toast.error(profileError.message);
-          setLoading(false);
-          return;
+          console.warn('[REGISTER] Profile insert warning:', profileError.message);
+          // Don't block redirect — dashboard layout will auto-create if needed
         }
 
         toast.success('Compte créé avec succès !');
+        console.log('[REGISTER] Redirecting to /dashboard...');
         window.location.href = '/dashboard';
+        return; // Stop execution
       }
     } catch (err) {
+      console.error('[REGISTER] Unexpected error:', err);
       toast.error('Une erreur inattendue est survenue.');
-    } finally {
       setLoading(false);
     }
   };

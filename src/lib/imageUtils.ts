@@ -19,5 +19,5 @@ export function getSignalementImageUrl(imagePath: string): string {
     if (imagePath.startsWith('http') || imagePath.startsWith('/api/')) {
         return imagePath;
     }
-    return getImageUrl('signalement-photos', imagePath);
+    return getImageUrl('signalements_photos', imagePath);
 }

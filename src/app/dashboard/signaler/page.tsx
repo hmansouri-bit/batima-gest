@@ -47,13 +47,12 @@ export default function SignalerPage() {
     setLoading(true);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session || !session.user) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
         toast.error('Session expirée. Veuillez vous reconnecter.');
         window.location.href = '/auth/login';
         return;
       }
-      const user = session.user;
 
       let photo_url: string | null = null;
 
@@ -61,7 +60,7 @@ export default function SignalerPage() {
         const ext = file.name.split('.').pop();
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
-          .from('signalement-photos')
+          .from('signalements_photos')
           .upload(path, file);
 
         if (uploadError) {

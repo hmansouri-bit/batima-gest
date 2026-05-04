@@ -74,16 +74,15 @@ export default function AdminSignalements() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Tous les signalements</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Tous les signalements</h1>
 
       {/* Filter tabs */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {['tous', ...statutOptions].map(f => (
           <button key={f} onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === f ? 'bg-gray-900 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-            }`}>
-            {f.replace('_', ' ')} {f === 'tous' ? `(${signalements.length})` : `(${signalements.filter(s=>s.statut===f).length})`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === f ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900' : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50'
+              }`}>
+            {f.replace('_', ' ')} {f === 'tous' ? `(${signalements.length})` : `(${signalements.filter(s => s.statut === f).length})`}
           </button>
         ))}
       </div>
@@ -97,13 +96,12 @@ export default function AdminSignalements() {
           {filtered.map(s => (
             <div key={s.id}
               onClick={() => setSelected(s)}
-              className={`bg-white p-4 rounded-xl border cursor-pointer hover:shadow-sm transition ${
-                selected?.id === s.id ? 'border-gray-900 shadow-sm' : 'border-gray-100'
-              }`}>
+              className={`bg-white dark:bg-gray-800 p-4 rounded-xl border cursor-pointer hover:shadow-sm transition ${selected?.id === s.id ? 'border-gray-900 dark:border-gray-400 shadow-sm' : 'border-gray-100 dark:border-gray-700'
+                }`}>
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-800 truncate">{s.titre}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="font-medium text-gray-800 dark:text-gray-100 truncate">{s.titre}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                     {s.residents?.full_name} — Appt {s.residents?.apartment_number}
                   </p>
                   <p className="text-xs text-gray-400">{s.parties_communes?.nom}</p>
@@ -126,28 +124,29 @@ export default function AdminSignalements() {
 
         {/* Detail panel */}
         {selected && (
-          <div className="w-80 bg-white rounded-xl border border-gray-100 p-5 h-fit sticky top-0 space-y-4">
+          <div className="w-80 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 p-5 h-fit sticky top-0 space-y-4">
             <div className="flex items-start justify-between">
-              <h2 className="font-semibold text-gray-800 text-sm leading-snug flex-1">{selected.titre}</h2>
+              <h2 className="font-semibold text-gray-800 dark:text-gray-100 text-sm leading-snug flex-1">{selected.titre}</h2>
               <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 ml-2">✕</button>
             </div>
 
-            <div className="text-xs text-gray-500 space-y-1">
+            <div className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
               <p>👤 {selected.residents?.full_name}</p>
               <p>🏠 Appt {selected.residents?.apartment_number} — {selected.residents?.building_name}</p>
               <p>📍 {selected.parties_communes?.nom}</p>
               <p>🗓️ {new Date(selected.created_at).toLocaleDateString('fr-FR', { dateStyle: 'long' })}</p>
             </div>
 
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <p className="text-xs text-gray-600">{selected.description}</p>
+            <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+              <p className="text-xs text-gray-600 dark:text-gray-300">{selected.description}</p>
             </div>
 
             {selected.photo_url && (
               <div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={selected.photo_url} alt="Photo" className="w-full rounded-lg object-cover max-h-40" />
-                <a href={selected.photo_url} target="_blank" rel="noopener noreferrer"
+                <img src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/signalements_photos/${selected.photo_url}`} alt="Photo" className="w-full rounded-lg object-cover max-h-40" />
+                <a href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/signalements_photos/${selected.photo_url}`} target="_blank" rel="noopener noreferrer"
+
                   className="text-blue-600 text-xs mt-1 inline-block hover:underline">
                   Voir en plein écran →
                 </a>
@@ -156,16 +155,15 @@ export default function AdminSignalements() {
 
             {/* Change status */}
             <div>
-              <p className="text-xs font-medium text-gray-700 mb-2">Changer le statut:</p>
+              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Changer le statut:</p>
               <div className="grid grid-cols-2 gap-2">
                 {statutOptions.map(statut => (
                   <button key={statut}
                     onClick={() => updateStatut(selected.id, statut)}
-                    className={`text-xs py-1.5 px-2 rounded-lg border transition font-medium ${
-                      selected.statut === statut
-                        ? 'bg-gray-900 text-white border-gray-900'
-                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-                    }`}>
+                    className={`text-xs py-1.5 px-2 rounded-lg border transition font-medium ${selected.statut === statut
+                        ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900 dark:border-white'
+                        : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50'
+                      }`}>
                     {statut.replace('_', ' ')}
                   </button>
                 ))}

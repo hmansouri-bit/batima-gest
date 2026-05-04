@@ -63,45 +63,45 @@ export default function SignalementDetailPage() {
         ← Retour aux signalements
       </Link>
 
-      <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-6 space-y-5">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-slate-100 dark:border-gray-700 shadow-sm p-6 space-y-5">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-xl font-bold text-slate-900">{s.titre}</h1>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">{s.titre}</h1>
           <span className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium ${statutColors[s.statut]}`}>
             {s.statut.replace('_', ' ')}
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="bg-slate-50 rounded-lg p-3">
+          <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-3">
             <p className="text-slate-400 text-xs mb-1">Partie commune</p>
-            <p className="font-medium text-slate-800">{s.parties_communes?.nom || '—'}</p>
+            <p className="font-medium text-slate-800 dark:text-gray-100">{s.parties_communes?.nom || '—'}</p>
           </div>
-          <div className="bg-slate-50 rounded-lg p-3">
+          <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-3">
             <p className="text-slate-400 text-xs mb-1">Étage</p>
-            <p className="font-medium text-slate-800">{s.parties_communes?.etage || '—'}</p>
+            <p className="font-medium text-slate-800 dark:text-gray-100">{s.parties_communes?.etage || '—'}</p>
           </div>
-          <div className="bg-slate-50 rounded-lg p-3">
+          <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-3">
             <p className="text-slate-400 text-xs mb-1">Priorité</p>
-            <p className="font-medium text-slate-800 capitalize">{s.priorite}</p>
+            <p className="font-medium text-slate-800 dark:text-gray-100 capitalize">{s.priorite}</p>
           </div>
-          <div className="bg-slate-50 rounded-lg p-3">
+          <div className="bg-slate-50 dark:bg-gray-700 rounded-lg p-3">
             <p className="text-slate-400 text-xs mb-1">Date</p>
-            <p className="font-medium text-slate-800">
+            <p className="font-medium text-slate-800 dark:text-gray-100">
               {new Date(s.created_at).toLocaleDateString('fr-FR', { dateStyle: 'long' })}
             </p>
           </div>
         </div>
 
         <div>
-          <p className="text-sm font-medium text-slate-700 mb-2">Description</p>
-          <p className="text-sm text-slate-600 bg-slate-50 p-4 rounded-lg leading-relaxed whitespace-pre-wrap">
+          <p className="text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Description</p>
+          <p className="text-sm text-slate-600 dark:text-gray-400 bg-slate-50 dark:bg-gray-700 p-4 rounded-lg leading-relaxed whitespace-pre-wrap">
             {s.description}
           </p>
         </div>
 
         {s.photo_url && (
           <div>
-            <p className="text-sm font-medium text-slate-700 mb-2">Photo du problème</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Photo du problème</p>
             <img
               src={getSignalementImageUrl(s.photo_url)}
               alt="Photo du problème"

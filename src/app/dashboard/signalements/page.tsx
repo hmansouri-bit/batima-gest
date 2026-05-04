@@ -37,10 +37,8 @@ export default function SignalementsList() {
 
   useEffect(() => {
     const load = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session || !session.user) return;
-
-      const user = session.user;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
       const { data } = await supabase
         .from('signalements')
