@@ -85,13 +85,14 @@ export default function RegisterPage() {
         console.log('[REGISTER] Signed in, creating profile...');
 
         // Try to create profile — if it fails, dashboard layout will handle it
-        const { error: profileError } = await supabase.from('residents').insert({
+        const { error: profileError } = await supabase.from('residents').upsert({
           id: signInData.user.id,
           full_name: formData.fullName,
           phone: formData.phone || null,
           apartment_number: formData.apartmentNumber,
           building_name: formData.buildingName,
-        });
+        }, { onConflict: 'id' });
+
 
         if (profileError) {
           console.warn('[REGISTER] Profile insert warning:', profileError.message);
